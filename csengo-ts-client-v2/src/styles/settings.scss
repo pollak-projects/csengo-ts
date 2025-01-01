@@ -1,0 +1,13 @@
+/**
+ * src/styles/settings.scss
+ *
+ * Configures SASS variables and Vuetify overwrites
+ */
+
+// https://vuetifyjs.com/features/sass-variables/`
+// @use 'vuetify/settings' with (
+//   $color-pack: false,
+// );
+
+$exact-red: #ff0000;
+$component-shadow: 0 0 15px rgba(255, 0, 0, 0.35);

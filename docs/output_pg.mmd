@@ -1,0 +1,101 @@
+erDiagram
+
+  _prisma_migrations {
+    varchar id PK
+    varchar checksum
+    timestamptz finished_at
+    varchar migration_name
+    text logs
+    timestamptz rolled_back_at
+    timestamptz started_at
+    int4 applied_steps_count
+  }
+
+  Kreta {
+    uuid id PK
+    int8 om UK
+    varchar name
+    timestamptz createdAt
+    timestamptz updatedAt
+  }
+
+  Role {
+    uuid id PK
+    text role UK
+  }
+
+  SongBucket {
+    uuid id PK
+    varchar path
+    timestamptz createdAt
+    timestamptz updatedAt
+  }
+
+  VotingSession {
+    uuid id PK
+    _text songNames
+    timestamptz start
+    timestamptz end
+    timestamptz createdAt
+    timestamptz updatedAt
+  }
+
+  User {
+    uuid id PK
+    varchar username
+    varchar password
+    varchar email
+    timestamptz createdAt
+    timestamptz updatedAt
+    uuid kretaId FK
+  }
+
+  _RoleToUser {
+    uuid A PK
+    uuid B PK
+  }
+
+  PendingSong {
+    uuid id PK
+    varchar title
+    timestamptz createdAt
+    timestamptz updatedAt
+    uuid songBucketId FK
+    uuid uploadedById FK
+  }
+
+  Song {
+    uuid id PK
+    varchar title
+    timestamptz createdAt
+    timestamptz updatedAt
+    uuid songBucketId FK
+    uuid uploadedById FK
+  }
+
+  _SongToVotingSession {
+    uuid A PK
+    uuid B PK
+  }
+
+  Vote {
+    serial id PK
+    uuid userId FK
+    uuid songId FK
+    uuid sessionId FK
+    timestamptz createdAt
+    timestamptz updatedAt
+  }
+
+  Kreta ||--o{ User : "foreign key"
+  Role ||--o{ _RoleToUser : "foreign key"
+  SongBucket ||--o{ PendingSong : "foreign key"
+  SongBucket ||--o{ Song : "foreign key"
+  VotingSession ||--o{ _SongToVotingSession : "foreign key"
+  VotingSession ||--o{ Vote : "foreign key"
+  User ||--o{ _RoleToUser : "foreign key"
+  User ||--o{ PendingSong : "foreign key"
+  User ||--o{ Song : "foreign key"
+  User ||--o{ Vote : "foreign key"
+  Song ||--o{ _SongToVotingSession : "foreign key"
+  Song ||--o{ Vote : "foreign key"

@@ -1,9 +1,100 @@
 generator client {
-  provider      = "prisma-client-js"
-  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+    provider      = "prisma-client-js"
+    binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model Kreta {
+    id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+    om        BigInt    @unique @db.BigInt
+    name      String    @db.VarChar(255)
+    user      User?
+    createdAt DateTime? @default(now()) @db.Timestamptz
+    updatedAt DateTime? @default(now()) @db.Timestamptz
+}
+
+model User {
+    id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+    username  String   @db.VarChar(255)
+    password  String   @db.VarChar(255)
+    email     String   @db.VarChar(255)
+    kreta     Kreta    @relation(fields: [kretaId], references: [id])
+    roles     Role[]
+    createdAt DateTime @default(now()) @db.Timestamptz
+    updatedAt DateTime @default(now()) @db.Timestamptz
+
+    Vote         Vote[]
+    kretaId      String        @unique @db.Uuid
+    songs        Song[]
+    pendingSongs PendingSong[]
+}
+
+model Song {
+    id         String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+    title      String?    @db.VarChar(255)
+    songBucket SongBucket @relation(fields: [songBucketId], references: [id])
+    createdAt  DateTime   @default(now()) @db.Timestamptz
+    updatedAt  DateTime   @default(now()) @db.Timestamptz
+    uploadedBy User       @relation(fields: [uploadedById], references: [id])
+
+    songBucketId  String          @unique @db.Uuid
+    uploadedById  String          @default("00000000-0000-0000-0000-000000000000") @db.Uuid
+    votingSession VotingSession[]
+    Vote          Vote[]
+}
+
+model PendingSong {
+    id         String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+    title      String?    @db.VarChar(255)
+    songBucket SongBucket @relation(fields: [songBucketId], references: [id])
+    createdAt  DateTime   @default(now()) @db.Timestamptz
+    updatedAt  DateTime   @default(now()) @db.Timestamptz
+    uploadedBy User       @relation(fields: [uploadedById], references: [id])
+
+    songBucketId String @unique @db.Uuid
+    uploadedById String @default("00000000-0000-0000-0000-000000000000") @db.Uuid
+}
+
+model SongBucket {
+    id          String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+    path        String       @db.VarChar(500)
+    song        Song?
+    pendingSong PendingSong?
+    createdAt   DateTime     @default(now()) @db.Timestamptz
+    updatedAt   DateTime     @default(now()) @db.Timestamptz
+}
+
+model Vote {
+    id        Int      @id @default(autoincrement())
+    userId    String   @db.Uuid
+    songId    String   @db.Uuid
+    sessionId String   @db.Uuid
+    createdAt DateTime @default(now()) @db.Timestamptz
+    updatedAt DateTime @default(now()) @db.Timestamptz
+
+    Sound   Song          @relation(fields: [songId], references: [id], onDelete: Cascade)
+    User    User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+    Session VotingSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+}
+
+model VotingSession {
+    id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+    songs     Song[]   @relation()
+    songNames String[]
+    start     DateTime @default(now()) @db.Timestamptz
+    end       DateTime @default(now()) @db.Timestamptz
+    createdAt DateTime @default(now()) @db.Timestamptz
+    updatedAt DateTime @default(now()) @db.Timestamptz
+
+    Vote Vote[] @relation()
+}
+
+model Role {
+    id    String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+    users User[]
+    role  String @unique
 }

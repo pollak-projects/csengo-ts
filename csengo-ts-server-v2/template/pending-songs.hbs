@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="utf-8" />
+  <title>Elbírálásra váró zenék</title>
+  <link rel="icon" href="/pollakLogo.png" type="image/png">
+  <style>
+    body {
+      background-color: rgb(18, 18, 18);
+      color: white;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    tr {
+      text-align: left;
+    }
+    th, td {
+      border: 1px solid white;
+      padding: 0.5rem;
+    }
+    th {
+      background-color: rgb(18, 18, 18);
+    }
+    td {
+      background-color: rgb(36, 36, 36);
+    }
+    tr:nth-child(even) td {
+      background-color: rgb(54, 54, 54);
+    }
+  </style>
+</head>
+<body>
+{{#if error}}
+  <p>{{ error.message }}</p>
+{{/if}}
+{{#if pendingSongs}}
+  <p>Elbírálásra váró zenék:</p>
+  <table>
+    <thead>
+    <tr>
+      <th>Id</th>
+      <th>Created At</th>
+      <th>Updated At</th>
+      <th>Title</th>
+      <th>Song Bucket ID</th>
+      <th>Uploaded By ID</th>
+    </tr>
+    </thead>
+    <tbody>
+    {{#each pendingSongs}}
+      <tr>
+        <td>{{id}}</td>
+        <td>{{createdAt}}</td>
+        <td>{{updatedAt}}</td>
+        <td>{{title}}</td>
+        <td>{{songBucketId}}</td>
+        <td>{{uploadedById}}</td>
+      </tr>
+    {{/each}}
+    </tbody>
+  </table>
+{{else}}
+  <p>Nincsenek elbírálásra váró zenék</p>
+{{/if}}
+</body>
+</html>

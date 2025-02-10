@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="utf-8" />
+  <title>Jelenlegi Szavazás</title>
+  <link rel="icon" href="/pollakLogo.png" type="image/png">
+  <style>
+    body {
+      background-color: rgb(18, 18, 18);
+      color: white;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    tr {
+      text-align: left;
+    }
+    th, td {
+      border: 1px solid white;
+      padding: 0.5rem;
+    }
+    th {
+      background-color: rgb(18, 18, 18);
+    }
+    td {
+      background-color: rgb(36, 36, 36);
+    }
+    tr:nth-child(even) td {
+      background-color: rgb(54, 54, 54);
+    }
+  </style>
+</head>
+<body>
+{{#if error}}
+  <p>{{ error.message }}</p>
+{{/if}}
+{{#if sessionId}}
+  <p>Session Id: {{ sessionId }}</p>
+  <p>Zenék a jelenlegi szavazásban:</p>
+  <table>
+    <thead>
+      <tr>
+        <th>Id</th>
+        <th>Cím</th>
+        <th>Szavazatok</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each songs}}
+        <tr>
+          <td>{{ songId }}</td>
+          <td>{{ songTitle }}</td>
+          <td>{{ voteCount }}</td>
+        </tr>
+      {{/each}}
+    </tbody>
+  </table>
+{{else}}
+  <p>No songs available</p>
+{{/if}}
+</body>
+</html>

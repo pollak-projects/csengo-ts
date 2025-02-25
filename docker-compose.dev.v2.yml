@@ -1,0 +1,78 @@
+services:
+  csengo-v2-postgres:
+    container_name: csengo-v2-postgres
+    image: postgres:16.6
+    restart: always
+    environment:
+      POSTGRES_USER: csengo
+      POSTGRES_PASSWORD: csengo
+      POSTGRES_DB: csengo
+    volumes:
+      - csengo-v2_db:/var/lib/postgresql/data
+      - ./assets/initdb.sql:/docker-entrypoint-initdb.d/initdb.sql
+    networks:
+      - csengo-v2
+
+  csengo-ts-server-v2:
+    container_name: csengo-ts-server-v2
+    build:
+      context: ../02.28/csengo-ts-server-v2
+      dockerfile: Dockerfile
+    image: csengo-ts-server-v2
+    restart: always
+    volumes:
+      - ./assets:/data
+    ports:
+      - "3300:3300"
+    depends_on:
+      - csengo-v2-postgres
+    networks:
+      - csengo-v2
+    environment:
+      PORT: 3300
+      DATABASE_URL: "postgresql://csengo:csengo@csengo-v2-postgres:5432/csengo?schema=public"
+      UPLOAD_PATH: "./data/audio"
+      TOKEN_SECRET: "token-secret"
+      JWT_SECRET: "jwt-secret"
+      CORS_ORIGIN: "*"
+      CORS_DOMAIN: "localhost"
+      DEV: true
+      WS_API_KEY: "ws-api-key"
+
+  csengo-ts-client-v2:
+    container_name: csengo-ts-client-v2
+    build:
+      context: ../02.28/csengo-ts-client-v2
+      dockerfile: Dockerfile
+      target: prod
+      args:
+        - VITE_API_URL=http://localhost:3300
+        - VITE_COOKIE_DOMAIN=localhost
+    image: csengo-ts-client-v2
+    ports:
+      - "8080:80"
+    networks:
+      - csengo-v2
+
+  csengo-v2-pgadmin:
+    container_name: csengo-v2-pgadmin
+    image: dpage/pgadmin4
+    restart: always
+    ports:
+      - "8081:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: csengo@csengo.dev
+      PGADMIN_DEFAULT_USERNAME: admin
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_CONFIG_WTF_CSRF_ENABLED: "False"
+    volumes:
+      - csengo-v2_pgadmin:/var/lib/pgadmin
+    networks:
+      - csengo-v2
+
+networks:
+  csengo-v2:
+
+volumes:
+  csengo-v2_db:
+  csengo-v2_pgadmin:

@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  csengo-v2-postgres-dev:
+    container_name: csengo-v2-postgres-dev
+    image: postgres:16.6
+    restart: always
+    ports:
+      - '5582:5432'
+    environment:
+      POSTGRES_USER: csengo
+      POSTGRES_PASSWORD: csengo
+      POSTGRES_DB: csengo
+    volumes:
+      - csengo-v2-dev_db:/var/lib/postgresql/data
+    networks:
+      - csengo-v2-dev
+
+  csengo-ts-server-v2-dev:
+    container_name: csengo-ts-server-v2-dev
+    build:
+      dockerfile: Dockerfile
+    restart: always
+    volumes:
+      - csengo-v2-dev_sounds:/usr/app/data
+    ports:
+      - "3300:3300"
+    depends_on:
+      - csengo-v2-postgres-dev
+    networks:
+      - csengo-v2-dev
+    environment:
+      PORT: 3300
+      DATABASE_URL: "postgresql://csengo:csengo@csengo-v2-postgres-dev:5432/csengo?schema=public"
+      UPLOAD_PATH: "./data/audio"
+      TOKEN_SECRET: "secret-token"
+      JWT_SECRET: "JWT_SECRET"
+      CORS_ORIGIN: "*"
+      CORS_DOMAIN: "localhost"
+      DEV: true
+
+networks:
+  csengo-v2-dev:
+
+volumes:
+  csengo-v2-dev_db:
+  csengo-v2-dev_sounds:

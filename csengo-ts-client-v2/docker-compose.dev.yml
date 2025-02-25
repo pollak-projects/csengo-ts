@@ -1,0 +1,17 @@
+services:
+  csengo-ts-client-v2:
+    container_name: csengo-ts-client-v2
+    build:
+      dockerfile: Dockerfile
+      target: prod
+      args:
+        - VITE_API_URL=http://localhost:3300/api
+        - VITE_COOKIE_DOMAIN=localhost
+    image: csengo-ts-client-v2
+    ports:
+      - "8080:80"
+    networks:
+      - csengo
+
+networks:
+  csengo:

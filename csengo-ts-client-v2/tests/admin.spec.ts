@@ -50,7 +50,7 @@ test.describe('Admin Page', () => {
   test('should go to miscellaneous when miscellaneous is pressed', async ({ page }) => {
     await page.goto('/admin')
     await page.getByRole('button', { name: 'Egyebek' }).click()
-    await expect(page.getByRole('button', { name: 'Csengő indítása' })).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Nyertes zene letöltése' })).toBeVisible()
   })
 
   test('should display no data on song page when no data is present', async ({ page }) => {
@@ -1026,49 +1026,8 @@ test.describe('Admin Page', () => {
   test('should display all buttons on miscellaneous page', async ({ page }) => {
     await page.goto('/admin')
     await page.getByRole('button', { name: 'Egyebek' }).click()
-    await expect(page.getByRole('button', { name: 'Csengő indítása' })).toBeVisible()
-    await expect(page.getByRole('button', { name: 'Csengő leállítása' })).toBeVisible()
     await expect(page.getByRole('button', { name: 'Szavazásban lévő zenék letöltése' })).toBeVisible()
     await expect(page.getByRole('button', { name: 'Nyertes zene letöltése' })).toBeVisible()
-    await expect(page.getByRole('button', { name: 'Nyertes zene frissítése szerveren' })).toBeVisible()
-  })
-
-  test('should start csengo on miscellaneous page when start button is pressed', async ({ page }) => {
-    await page.route('**/api/songs/server/start', async route => {
-      await route.fulfill({
-        status: 200,
-        body: JSON.stringify({
-          message: 'Audio started successfully'
-        })
-      })
-    })
-
-    await page.goto('/admin')
-    await page.getByRole('button', { name: 'Egyebek' }).click()
-    await page.getByRole('button', { name: 'Csengő indítása' }).click()
-
-    const toast = page.locator('.alert-success')
-    await expect(toast).toBeVisible()
-    await expect(toast).toHaveText('Audio started successfully')
-  })
-
-  test('should stop csengo on miscellaneous page when stop button is pressed', async ({ page }) => {
-    await page.route('**/api/songs/server/stop', async route => {
-      await route.fulfill({
-        status: 200,
-        body: JSON.stringify({
-          message: 'Audio stopped successfully'
-        })
-      })
-    })
-
-    await page.goto('/admin')
-    await page.getByRole('button', { name: 'Egyebek' }).click()
-    await page.getByRole('button', { name: 'Csengő leállítása' }).click()
-
-    const toast = page.locator('.alert-success')
-    await expect(toast).toBeVisible()
-    await expect(toast).toHaveText('Audio stopped successfully')
   })
 
   test('should download songs in voting on miscellaneous page when download button is pressed', async ({ page }) => {
@@ -1139,26 +1098,6 @@ test.describe('Admin Page', () => {
     expect(path).toBeTruthy()
     // Has to be wav since we are using wavEncoder
     expect(download.suggestedFilename()).toBe('Happy Nation.wav')
-  })
-
-  test('should update winner song on server on miscellaneous page when update button is pressed', async ({ page }) => {
-    await page.route('**/api/songs/server/update', async route => {
-      await route.fulfill({
-        status: 200,
-        body: JSON.stringify({
-          message: 'Audio update successful'
-        })
-      })
-    })
-
-    await page.goto('/admin')
-    await page.getByRole('button', { name: 'Egyebek' }).click()
-
-    await page.getByRole('button', { name: 'Nyertes zene frissítése szerveren' }).click()
-
-    const toast = page.locator('.alert-success')
-    await expect(toast).toBeVisible()
-    await expect(toast).toHaveText('Audio update successful')
   })
 })
 

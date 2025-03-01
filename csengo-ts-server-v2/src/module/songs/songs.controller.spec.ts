@@ -116,39 +116,6 @@ describe('SongsController', () => {
         });
     });
 
-    describe('updateAudioById', () => {
-        it('should update audio for admin', async () => {
-            const mockRequest = {
-                token: { sub: 'mockedId', username: 'mockedUser', roles: [RoleEnum.Admin], hashedPassword: 'mocked-password' },
-            } as RequestUser;
-            const result = await songsController.updateAudio(mockRequest);
-            expect(result).toEqual({ success: true });
-            expect(songsService.updateAudio).toHaveBeenCalledWith(mockRequest);
-        });
-    });
-
-    describe('startAudio', () => {
-        it('should start audio for admin', async () => {
-            const mockRequest = {
-                token: { sub: 'mockedId', username: 'mockedUser', roles: [RoleEnum.Admin], hashedPassword: 'mocked-password' },
-            } as RequestUser;
-            const result = await songsController.startAudio(mockRequest);
-            expect(result).toEqual({ success: true });
-            expect(songsService.startAudio).toHaveBeenCalledWith(mockRequest);
-        });
-    });
-
-    describe('stopAudio', () => {
-        it('should stop audio for admin', async () => {
-            const mockRequest = {
-                token: { sub: 'mockedId', username: 'mockedUser', roles: [RoleEnum.Admin], hashedPassword: 'mocked-password' },
-            } as RequestUser;
-            const result = await songsController.stopAudio(mockRequest);
-            expect(result).toEqual({ success: true });
-            expect(songsService.stopAudio).toHaveBeenCalledWith(mockRequest);
-        });
-    });
-
     describe('upload', () => {
         it('should upload a song', async () => {
             const mockRequest = {

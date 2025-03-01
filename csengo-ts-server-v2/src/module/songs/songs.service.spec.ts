@@ -2,8 +2,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { SongsService } from './songs.service';
 import { PrismaConfigService } from '../../config/prisma.config.service';
 import { ConfigService } from '@nestjs/config';
-import { AwsS3ClientConfigService } from '../../config/aws.s3.client.config.service';
-import { WebsocketGateway } from '../websocket/websocket.gateway';
 import { HttpException, HttpStatus, Logger, StreamableFile } from '@nestjs/common';
 import { RequestUser, Response } from 'express';
 import { CreateSongDto } from './dto/create.song.dto';
@@ -96,18 +94,6 @@ describe('SongsService', () => {
                 {
                     provide: ConfigService,
                     useValue: {},
-                },
-                {
-                    provide: AwsS3ClientConfigService,
-                    useValue: {},
-                },
-                {
-                    provide: WebsocketGateway,
-                    useValue: {
-                        waitForSuccess: jest.fn(),
-                        waitForSuccessfulStart: jest.fn(),
-                        waitForSuccessfulStop: jest.fn(),
-                    },
                 },
             ],
         }).compile();
@@ -275,60 +261,6 @@ describe('SongsService', () => {
             prisma.song.findUnique = jest.fn().mockResolvedValue(null);
 
             await expect(service.getAudioById('songId', mockRequestUser)).rejects.toThrow(new HttpException('Song not found', HttpStatus.NOT_FOUND));
-        });
-    });
-
-    describe('updateAudio', () => {
-        it('should update audio', async () => {
-            const mockResult = { message: 'Success' };
-            service['websocketGateway'].waitForSuccess = jest.fn().mockResolvedValue(mockResult);
-
-            const result = await service.updateAudio(mockRequestUser);
-            expect(result).toEqual({ message: mockResult });
-        });
-
-        it('should throw an error when update fails', async () => {
-            service['websocketGateway'].waitForSuccess = jest.fn().mockRejectedValue(new Error('Update failed'));
-
-            await expect(service.updateAudio(mockRequestUser)).rejects.toThrow(
-                new HttpException('Error updating audio: Update failed', HttpStatus.INTERNAL_SERVER_ERROR),
-            );
-        });
-    });
-
-    describe('startAudio', () => {
-        it('should start audio', async () => {
-            const mockResult = { message: 'Success' };
-            service['websocketGateway'].waitForSuccessfulStart = jest.fn().mockResolvedValue(mockResult);
-
-            const result = await service.startAudio(mockRequestUser);
-            expect(result).toEqual({ message: mockResult });
-        });
-
-        it('should throw an error when start fails', async () => {
-            service['websocketGateway'].waitForSuccessfulStart = jest.fn().mockRejectedValue(new Error('Start failed'));
-
-            await expect(service.startAudio(mockRequestUser)).rejects.toThrow(
-                new HttpException('Error starting audio: Start failed', HttpStatus.INTERNAL_SERVER_ERROR),
-            );
-        });
-    });
-
-    describe('stopAudio', () => {
-        it('should stop audio', async () => {
-            const mockResult = { message: 'Success' };
-            service['websocketGateway'].waitForSuccessfulStop = jest.fn().mockResolvedValue(mockResult);
-
-            const result = await service.stopAudio(mockRequestUser);
-            expect(result).toEqual({ message: mockResult });
-        });
-
-        it('should throw an error when stop fails', async () => {
-            service['websocketGateway'].waitForSuccessfulStop = jest.fn().mockRejectedValue(new Error('Stop failed'));
-
-            await expect(service.stopAudio(mockRequestUser)).rejects.toThrow(
-                new HttpException('Error stopping audio: Stop failed', HttpStatus.INTERNAL_SERVER_ERROR),
-            );
         });
     });
 

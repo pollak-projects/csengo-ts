@@ -29,8 +29,6 @@ declare module 'vue' {
     SongUpload: typeof import('./components/dashboard/left-card/SongUpload.vue')['default']
     SongVote: typeof import('./components/dashboard/left-card/SongVote.vue')['default']
     SongVoteList: typeof import('./components/dashboard/left-card/SongVoteList.vue')['default']
-    Time: typeof import('./components/admin/timetable/Time.vue')['default']
-    TimeList: typeof import('./components/admin/timetable/TimeList.vue')['default']
     Toast: typeof import('./components/common/Toast.vue')['default']
     UpdateSessionPopup: typeof import('./components/admin/session/UpdateSessionPopup.vue')['default']
     UpdateSongPopup: typeof import('./components/admin/song/UpdateSongPopup.vue')['default']

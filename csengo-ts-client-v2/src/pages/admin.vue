@@ -8,7 +8,6 @@ import SongList from '@/components/admin/song/SongList.vue'
 import SessionList from '@/components/admin/session/SessionList.vue'
 import Download from '@/components/admin/Download.vue'
 import UserList from '@/components/admin/user/UserList.vue'
-import TimeTable from '@/components/admin/timetable/TimeList.vue'
 import { useCookies } from '@vueuse/integrations/useCookies'
 
 const isWindowSizeEnoguh = ref(true)
@@ -21,7 +20,6 @@ const componentsMap = {
   PendingSongList,
   SessionList,
   UserList,
-  TimeTable,
   Download,
 }
 
@@ -83,9 +81,6 @@ function logout() {
           <button class="navbar-link" @click="currentComponent = componentsMap.UserList">
             Felhasználók
           </button>
-          <button class="navbar-link" @click="currentComponent = componentsMap.TimeTable">
-            Csengetési rend
-          </button>
           <button class="navbar-link" @click="currentComponent = componentsMap.Download">
             Egyebek
           </button>
@@ -102,58 +97,34 @@ function logout() {
 
       <div v-if="isMobileMenuOpen" class="mobile-menu">
         <RouterLink to="/" class="navbar-link" @click="isMobileMenuOpen = false">Home</RouterLink>
-        <button
-          class="navbar-link"
-          @click="
-            currentComponent = componentsMap.SongList;
-            isMobileMenuOpen = false
-          "
-        >
+        <button class="navbar-link" @click="
+          currentComponent = componentsMap.SongList;
+        isMobileMenuOpen = false
+          ">
           Zenék
         </button>
-        <button
-          class="navbar-link"
-          @click="
-            currentComponent = componentsMap.PendingSongList;
-            isMobileMenuOpen = false
-          "
-        >
+        <button class="navbar-link" @click="
+          currentComponent = componentsMap.PendingSongList;
+        isMobileMenuOpen = false
+          ">
           Zene kérelmek
         </button>
-        <button
-          class="navbar-link"
-          @click="
-            currentComponent = componentsMap.SessionList;
-            isMobileMenuOpen = false
-          "
-        >
+        <button class="navbar-link" @click="
+          currentComponent = componentsMap.SessionList;
+        isMobileMenuOpen = false
+          ">
           Szavazások
         </button>
-        <button
-          class="navbar-link"
-          @click="
-            currentComponent = componentsMap.UserList;
-            isMobileMenuOpen = false
-          "
-        >
+        <button class="navbar-link" @click="
+          currentComponent = componentsMap.UserList;
+        isMobileMenuOpen = false
+          ">
           Felhasználók
         </button>
-        <button
-          class="navbar-link"
-          @click="
-            currentComponent = componentsMap.TimeTable;
-            isMobileMenuOpen = false
-          "
-        >
-          Csengetési rend
-        </button>
-        <button
-          class="navbar-link"
-          @click="
-            currentComponent = componentsMap.Download;
-            isMobileMenuOpen = false
-          "
-        >
+        <button class="navbar-link" @click="
+          currentComponent = componentsMap.Download;
+        isMobileMenuOpen = false
+          ">
           Egyebek
         </button>
       </div>

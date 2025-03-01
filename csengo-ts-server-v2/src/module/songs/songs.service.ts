@@ -2,14 +2,10 @@ import { HttpException, HttpStatus, Injectable, Logger, StreamableFile } from '@
 import { PrismaConfigService } from '../../config/prisma.config.service';
 import { RequestUser, Response } from 'express';
 import { CreateSongDto } from './dto/create.song.dto';
-import { ConfigService } from '@nestjs/config';
-import { AwsS3ClientConfigService } from '../../config/aws.s3.client.config.service';
 import { createReadStream } from 'fs';
 import { rimraf } from 'rimraf';
 import { Prisma } from '@prisma/client';
 import * as archiver from 'archiver';
-import { WebsocketGateway } from '../websocket/websocket.gateway';
-import { UpdateScheduleDto } from "./dto/update.schedule.dto";
 
 /**
  * Songs service
@@ -20,9 +16,6 @@ export class SongsService {
 
     constructor(
         private readonly prisma: PrismaConfigService,
-        private readonly configService: ConfigService,
-        private readonly s3Client: AwsS3ClientConfigService,
-        private readonly websocketGateway: WebsocketGateway,
     ) {}
 
     /**
@@ -273,61 +266,6 @@ export class SongsService {
         } catch (e) {
             this.logger.error(`Error creating streamable file for song: ${id} by user: ${JSON.stringify(request.token.username)}`);
             throw e;
-        }
-    }
-
-    /**
-     * Update audio
-     * @param request -
-     */
-    async updateAudio(request: RequestUser): Promise<object> {
-        this.logger.verbose(`Updating audio for user: ${JSON.stringify(request.token.username)}`);
-
-        try {
-            const result = await this.websocketGateway.waitForSuccess();
-            return { message: result };
-        } catch (e) {
-            this.logger.error(`Error updating audio for user: ${JSON.stringify(request.token.username)}`);
-            throw new HttpException(`Error updating audio: ${e.message}`, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    async startAudio(request: RequestUser): Promise<object> {
-        this.logger.verbose(`Starting audio for user: ${JSON.stringify(request.token.username)}`);
-
-        try {
-            const result = await this.websocketGateway.waitForSuccessfulStart();
-            return { message: result };
-        } catch (e) {
-            this.logger.error(`Error starting audio for user: ${JSON.stringify(request.token.username)}`);
-            throw new HttpException(`Error starting audio: ${e.message}`, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    async stopAudio(request: RequestUser): Promise<object> {
-        this.logger.verbose(`Stopping audio for user: ${JSON.stringify(request.token.username)}`);
-
-        try {
-            const result = await this.websocketGateway.waitForSuccessfulStop();
-            return { message: result };
-        } catch (e) {
-            this.logger.error(`Error stopping audio for user: ${JSON.stringify(request.token.username)}`);
-            throw new HttpException(`Error stopping audio: ${e.message}`, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    async updateSchedule(request: RequestUser, UpdateScheduleDto: UpdateScheduleDto): Promise<object> {
-        this.logger.verbose(`Updating schedule for user: ${JSON.stringify(request.token.username)}`);
-
-        this.logger.verbose(`Updating schedule to ${JSON.stringify(UpdateScheduleDto)}`);
-
-        try {
-            const result = await this.websocketGateway.waitForSuccessfulScheduleUpdate(UpdateScheduleDto);
-            this.logger.verbose(`Successfully updated schedule ${JSON.stringify(result)}`);
-            return { message: result };
-        } catch (e) {
-            this.logger.error(`Error updating schedule for user: ${JSON.stringify(request.token.username)}`);
-            throw new HttpException(`Error updating schedule: ${e.message}`, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

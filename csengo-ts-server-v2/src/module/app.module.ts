@@ -11,7 +11,6 @@ import { UserModule } from './user/user.module';
 import { VotesModule } from './votes/votes.module';
 import { VotingSessionsModule } from './votingSessions/voting.sessions.module';
 import { ThrottlerModule } from '@nestjs/throttler';
-import { WebsocketModule } from './websocket/websocket.module';
 import { ViewModule } from './view/view.module';
 
 @Module({
@@ -26,7 +25,6 @@ import { ViewModule } from './view/view.module';
         VotesModule,
         VotingSessionsModule,
         ViewModule,
-        WebsocketModule,
         ThrottlerModule.forRoot([
             {
                 name: 'short',

@@ -85,34 +85,6 @@ export class SongsController {
         return this.appService.getAudioById(id, request);
     }
 
-    @Get('server/update')
-    @Roles(RoleEnum.Admin)
-    @HttpCode(HttpStatus.OK)
-    async updateAudio(@Req() request: RequestUser): Promise<object> {
-        return this.appService.updateAudio(request);
-    }
-
-    @Get('server/start')
-    @Roles(RoleEnum.Admin)
-    @HttpCode(HttpStatus.OK)
-    async startAudio(@Req() request: RequestUser): Promise<object> {
-        return this.appService.startAudio(request);
-    }
-
-    @Get('server/stop')
-    @Roles(RoleEnum.Admin)
-    @HttpCode(HttpStatus.OK)
-    async stopAudio(@Req() request: RequestUser): Promise<object> {
-        return this.appService.stopAudio(request);
-    }
-
-    @Post('server/schedule')
-    @Roles(RoleEnum.Admin)
-    @HttpCode(HttpStatus.OK)
-    async updateSchedule(@Req() request: RequestUser, @Body() body: UpdateScheduleDto): Promise<object> {
-        return this.appService.updateSchedule(request, body);
-    }
-
     @Post('audio')
     @HttpCode(HttpStatus.OK)
     @UseFilters(DeleteFileOnErrorFilter)

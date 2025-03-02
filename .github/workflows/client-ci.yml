@@ -40,8 +40,8 @@ jobs:
           platforms: linux/amd64
           file: ./csengo-ts-client-v2/Dockerfile
           build-args: |
-            VITE_API_URL=https://api.csengo.hirst.4ox5.dev
-            VITE_COOKIE_DOMAIN=4ox5.dev
+            VITE_API_URL=https://api.csengo.hirst.4o1x5.dev
+            VITE_COOKIE_DOMAIN=4o1x5.dev
             VITE_TEST=false
           push: true
           tags: ghcr.io/pollak-projects/csengo-ts/client-app:latest

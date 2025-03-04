@@ -12,6 +12,7 @@ import { VotesModule } from './votes/votes.module';
 import { VotingSessionsModule } from './votingSessions/voting.sessions.module';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { ViewModule } from './view/view.module';
+import { SnipperModule } from './snipper/snipper.module';
 
 @Module({
     imports: [
@@ -22,6 +23,7 @@ import { ViewModule } from './view/view.module';
         SongsModule,
         TvModule,
         UserModule,
+        SnipperModule,
         VotesModule,
         VotingSessionsModule,
         ViewModule,
@@ -58,6 +60,10 @@ import { ViewModule } from './view/view.module';
             {
                 path: 'songs',
                 module: SongsModule,
+            },
+            {
+                path: 'snipper',
+                module: SnipperModule,
             },
             {
                 path: 'tv',

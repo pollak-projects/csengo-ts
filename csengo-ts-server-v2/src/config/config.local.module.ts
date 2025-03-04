@@ -19,6 +19,8 @@ import { StorageLocalConfigService } from './storage.local.config.service';
                 logger.log('Using local storage provider');
                 logger.verbose(`Creating directory: ${join(process.cwd(), configService.get<string>('UPLOAD_PATH')!)}`);
                 mkdirSync(join(process.cwd(), configService.get<string>('UPLOAD_PATH')!), { recursive: true });
+                logger.verbose(`Creating directory: ${join(process.cwd(), configService.get<string>('UPLOAD_TEMP_PATH')!)}`);
+                mkdirSync(join(process.cwd(), configService.get<string>('UPLOAD_TEMP_PATH')!), { recursive: true });
                 const localStorageProvider = new StorageLocalConfigService(configService);
                 return {
                     storage: localStorageProvider.getMulterStorage(),

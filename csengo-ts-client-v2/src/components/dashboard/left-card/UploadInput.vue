@@ -30,12 +30,16 @@ async function handleFileChange(event: Event) {
   }
 }
 
-
 </script>
 
 <template>
-  <div :class="['upload-input-main', { 'upload-input-main-grayed-out': isUploading }]">
-    <input type="file" accept="audio/mpeg" :disabled="isUploading" @change="handleFileChange" />
+  <div class="button-container">
+    <div :class="['upload-input-main', { 'upload-input-main-grayed-out': isUploading }]">
+      <input type="file" accept="audio/mpeg" :disabled="isUploading" @change="handleFileChange" />
+    </div>
+    <Router-link to="/snipper">
+      <button>Feltöltés YouTube-ról</button>
+    </Router-link>
   </div>
 </template>
 
@@ -70,5 +74,18 @@ async function handleFileChange(event: Event) {
     background-color: rgba(0, 0, 0, 0.5)
     color: white
     padding: 10px
+    box-sizing: border-box
     border-radius: 5px
+
+.button-container
+  display: grid
+  gap: .5em
+
+  button
+    color: white
+    background-color: rgba(0, 0, 0, 0.5)
+    padding: 10px
+    box-sizing: border-box
+    border-radius: 5px
+
 </style>

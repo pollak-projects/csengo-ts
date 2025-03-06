@@ -5,6 +5,7 @@ import { exec } from 'child_process';
 import { AddYoutubeSongDto } from './dto/add.song.dto';
 import { ConfigService } from '@nestjs/config';
 import { cwd } from 'process';
+import { join } from 'path';
 
 @Injectable()
 export class SnipperService {
@@ -74,9 +75,9 @@ export class SnipperService {
 
         // Cut out the part the user wants
         this.logger.verbose(`Using ffmpeg to cut out from ${songDto.from}-${songDto.to}`);
-        const cut_name = `${new Date()}-${video['title']}`;
+        const cut_name = `${Date.now()}-${video['title']}.mp3`;
         await new Promise<void>((resolve) => {
-            const command = `ffmpeg -i ${temp_path}/${original}.mp3 -ss ${songDto.from} -t ${songDto.to - songDto.from} -acodec copy "${this.config.get('UPLOAD_PATH')!}/${cut_name}.mp3" -nostdin`;
+            const command = `ffmpeg -i ${temp_path}/${original}.mp3 -ss ${songDto.from} -t ${songDto.to - songDto.from} -acodec copy "${this.config.get('UPLOAD_PATH')!}/${cut_name}" -nostdin`;
             exec(command, (error, stdout, stderr) => {
                 if (stderr) {
                     this.logger.verbose(`stderr of ffmpeg (might not be an error): ${stderr}`);
@@ -97,7 +98,7 @@ export class SnipperService {
                     },
                     songBucket: {
                         create: {
-                            path: cwd() + this.config.get('UPLOAD_PATH')! + '/' + cut_name,
+                            path: join(cwd(), this.config.get('UPLOAD_PATH')!) + '/' + cut_name,
                         },
                     },
                 },
@@ -109,7 +110,5 @@ export class SnipperService {
             .then(() => {
                 this.logger.verbose('Song has been added to the dabatase');
             });
-
-        // TODO: delete temp
     }
 }

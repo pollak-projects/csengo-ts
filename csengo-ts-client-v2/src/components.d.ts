@@ -22,6 +22,7 @@ declare module 'vue' {
     RouterView: typeof import('vue-router')['RouterView']
     Session: typeof import('./components/admin/session/Session.vue')['default']
     SessionList: typeof import('./components/admin/session/SessionList.vue')['default']
+    SnipperPanel: typeof import('./components/snipper/SnipperPanel.vue')['default']
     Song: typeof import('./components/admin/song/Song.vue')['default']
     SongList: typeof import('./components/admin/song/SongList.vue')['default']
     SongSelection: typeof import('./components/dashboard/right-card/song-selection/SongSelection.vue')['default']

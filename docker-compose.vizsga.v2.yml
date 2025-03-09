@@ -31,6 +31,7 @@ services:
       PORT: 3300
       DATABASE_URL: "postgresql://csengo:csengo@csengo-v2-postgres:5432/csengo?schema=public"
       UPLOAD_PATH: "./data/audio"
+      UPLOAD_TEMP_PATH: './data/temp'
       TOKEN_SECRET: "token-secret"
       JWT_SECRET: "jwt-secret"
       CORS_ORIGIN: ".*[a-z0-9]*.4o1x5.dev"

@@ -140,3 +140,6 @@ player/song.mp3
 assets/initdb_bat_local.sql
 postgresql-16.8-1-windows-x64.exe
 Docker Desktop Installer.exe
+Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle
+UWPDesktop.appx
+winget.msixbundle

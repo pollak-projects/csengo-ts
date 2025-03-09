@@ -18,12 +18,12 @@
 <style scoped lang="sass">
 .song-upload-main
   font-size: clamp(1rem, 4.5vw, 2rem)
-  width: 100% 
+  width: 100%
   display: flex
   flex-direction: column
   align-items: center
   justify-content: center
-  gap: 2dvh
+  gap: 1dvh
 
 .criteria-title
   font-size: clamp(1.5rem, 2.5vw, 2.5rem)

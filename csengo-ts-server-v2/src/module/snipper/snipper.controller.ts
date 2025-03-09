@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Post, Query, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, HttpCode, HttpStatus, Post, Req, UseGuards } from '@nestjs/common';
 import { SnipperService } from './snipper.service';
 import { RequestUser } from 'express';
 import { AuthGuard } from '../auth/auth.guard';

@@ -4,7 +4,6 @@ import { AppModule } from './module/app.module';
 import { Logger, ValidationPipe } from '@nestjs/common';
 import * as process from 'node:process';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import * as fs from 'fs';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
 import { registerHbsHelpers } from './util/hbs.helpers.util';

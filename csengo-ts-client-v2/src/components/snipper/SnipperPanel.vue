@@ -1,192 +1,183 @@
-
-<template>
-  <div class="container">
-    <div class="card-body">
-        <div id="video-player" />
-          <label for="url"></label>
-          <input @change="replace_url" type="text" name="url" placeholder="Youtube link ide">
-          <input v-model="title" type="text" name="url" placeholder="Adj neki egy nevet">
-          <v-range-slider   :max="length" @end="slider_change" step="1" :isDisabled="length == 0 ? true : false"
-            strict ="true"
-            v-model="from_to"
-    thumb-label="always"
-            />
-
-          <div class="button-container"
-            :class="{ upload: uploading }"
-            >
-            <button @click="uploadSong" :disabled="uploading">Feltöltés YouTube-ról
-                <span></span>
-                <span></span>
-                <span></span>
-                <span></span>
-
-            </button>
-          </div>
-    </div>
-  </div>
-</template>
-
 <script setup lang="ts">
-
 import { ToastEnum } from '@/types/toast.enum'
-import YouTubePlayer from 'youtube-player';
-import { ref } from 'vue'
+import YouTubePlayer from 'youtube-player'
+import { inject, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useUploadSongStore } from '@/stores/dashboard/snipper/uploadSong'
+
 const { triggerToast } = inject('toast') as { triggerToast: (message: string, type: ToastEnum) => void }
 
-const store = useUploadSongStore();
+const store = useUploadSongStore()
 
-const from_to = ref([0,0]);
-const from_to_last = ref([0,0]);
-const length = ref(0);
-const url = ref('');
-const title = ref('');
-const uploading = ref(false);
+const from_to = ref([0, 0])
+const from_to_last = ref([0, 0])
+const length = ref(0)
+const url = ref('')
+const title = ref('')
+const uploading = ref(false)
 
 async function uploadSong() {
+  if (url.value == '') {
+    triggerToast('Nem adtál meg egy zenét!', ToastEnum.Warning)
+    return
+  }
+  if ((from_to.value[0] == 0) || (from_to.value[1] == 0)) {
+    triggerToast('Nem adtál meg egy szekciót a zenéből!', ToastEnum.Warning)
+    return
+  }
+  if (title.value == '') {
+    triggerToast('Nem adtál meg egy nevet!', ToastEnum.Warning)
+    return
+  }
 
- if(url.value == ''){
-    triggerToast("Nem adtál meg egy zenét!", ToastEnum.Warning)
-    return;
-  }
-  if((from_to.value[0] == 0) || (from_to.value[1]==0)){
-    triggerToast("Nem adtál meg egy szekciót a zenéből!", ToastEnum.Warning)
-    return;
-  }
- if(title.value == ''){
-    triggerToast("Nem adtál meg egy nevet!", ToastEnum.Warning)
-    return;
-  }
-
-  uploading.value = true;
+  uploading.value = true
   try {
     await store.uploadSong({
-        ytUrl: url.value,
-        from: from_to.value[0],
-        to: from_to.value[1],
-        title: title.value,
+      ytUrl: url.value,
+      from: from_to.value[0],
+      to: from_to.value[1],
+      title: title.value
     })
-      triggerToast("A zene kivágva, és feltöltve!", ToastEnum.Success)
+    triggerToast('A zene kivágva, és feltöltve!', ToastEnum.Success)
   } catch (error) {
     triggerToast(error, ToastEnum.Warning)
   }
-  uploading.value = false;
+  uploading.value = false
 }
 
 const slider_change = async (input) => {
-  const [slider_start, slider_end] = input;
+  const [slider_start, slider_end] = input
 
-  const delta = slider_end - slider_start;
+  const delta = slider_end - slider_start
 
   if (delta > 15) {
     if (slider_start !== from_to_last.value[0]) {
-      from_to.value[1] = slider_start + 15;
+      from_to.value[1] = slider_start + 15
     } else if (slider_end !== from_to_last.value[1]) {
-      from_to.value[0] = slider_end - 15;
+      from_to.value[0] = slider_end - 15
+    }
+  } else if (delta < 5) {
+    if (slider_start !== from_to_last.value[0]) {
+      from_to.value[1] = slider_start + 5
+    } else if (slider_end !== from_to_last.value[1]) {
+      from_to.value[0] = slider_end - 5
     }
   }
-  else if (delta < 5) {
-    if (slider_start !== from_to_last.value[0]) {
-      from_to.value[1] = slider_start + 5;
-    } else if (slider_end !== from_to_last.value[1]) {
-      from_to.value[0] = slider_end - 5;
-    }
-    }
 
-  from_to_last.value = [...from_to.value];
-  player.seekTo(from_to.value[0],true)
+  from_to_last.value = [...from_to.value]
+  player.seekTo(from_to.value[0], true)
 
-  if(await player.getPlayerState() == 2){
+  if (await player.getPlayerState() == 2) {
     player.playVideo()
   }
-  };
+}
 
-let player;
+let player
 
-onMounted(()=>{
+function updatePlayerSize() {
+  const videoContainer = document.getElementById('responsive-video-container')
+  if (videoContainer) {
+    const width = videoContainer.offsetWidth
+    const height = videoContainer.offsetHeight
+    player.setSize(width, height)
+  }
+}
 
-  player = YouTubePlayer('video-player',{
-  playerVars: { controls:0 } // disable so user can only seek with the range input
-  });
-  player.addEventListener('onStateChange', async (event)=> {
-  if (event.data == YT.PlayerState.PLAYING) {
-    length.value = await player.getDuration()
+onMounted(() => {
+  const videoContainer = document.getElementById('responsive-video-container')
+  player = YouTubePlayer('video-player', {
+    height: videoContainer.offsetHeight,
+    width: videoContainer.offsetWidth,
+    playerVars: { controls: 0 } // disable so user can only seek with the range input
+  })
 
-      }}
-  );
+  player.addEventListener('onStateChange', async (event) => {
+    if (event.data == YT.PlayerState.PLAYING) {
+      length.value = await player.getDuration()
+    }
+  })
 
-   setInterval(async function () {
-      if (player.getCurrentTime() >= from_to.value[1]) {
-        await player.pauseVideo(); // Pause the video
-      }
-    }, 100);
+  setInterval(async function() {
+    if (player.getCurrentTime() >= from_to.value[1]) {
+      await player.pauseVideo() // Pause the video
+    }
+  }, 100)
 
+  window.addEventListener('resize', updatePlayerSize)
+  updatePlayerSize()
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', updatePlayerSize)
 })
 
 const replace_url = async (input) => {
-const regex  ='https:\/\/(?:m\.youtube\.com|yt\.be|youtube\.com|youtu\.be|www\.youtube\.com)';
-if (input.target.value.match(regex)){
-  player.loadVideoByUrl(transformUrl(input.target.value));
-
-    url.value = input.target.value;
-
-}else{
-  triggerToast("This link is not supported, only yout.be youtube.com are valid", ToastEnum.Warning)
-}
+  const regex = 'https://(?:m.youtube.com|yt.be|youtube.com|youtu.be|www.youtube.com)'
+  if (input.target.value.match(regex)) {
+    player.loadVideoByUrl(transformUrl(input.target.value))
+    url.value = input.target.value
+  } else {
+    triggerToast('This link is not supported, only yout.be youtube.com are valid', ToastEnum.Warning)
+  }
 }
 
 function transformUrl(url: string): string {
-    let transformedUrl: string;
+  let transformedUrl: string
 
-    const shortUrlMatch = url.match(/youtu\.be\/([a-zA-Z0-9_-]+)/);
-    if (shortUrlMatch) {
-        transformedUrl = `https://youtu.be/embed/${shortUrlMatch[1]}`;
+  const shortUrlMatch = url.match(/youtu\.be\/([a-zA-Z0-9_-]+)/)
+  if (shortUrlMatch) {
+    transformedUrl = `https://youtu.be/embed/${shortUrlMatch[1]}`
+  } else {
+    const standardUrlMatch = url.match(/youtube\.com\/watch\?v=([a-zA-Z0-9_-]+)/)
+    if (standardUrlMatch) {
+      transformedUrl = `https://youtube.com/embed/${standardUrlMatch[1]}`
     } else {
-        const standardUrlMatch = url.match(/youtube\.com\/watch\?v=([a-zA-Z0-9_-]+)/);
-        if (standardUrlMatch) {
-            transformedUrl = `https://youtube.com/embed/${standardUrlMatch[1]}`;
-        } else {
-            transformedUrl = url;
-        }
+      transformedUrl = url
     }
+  }
 
-    return transformedUrl;
+  return transformedUrl
 }
-
 </script>
+
+<template>
+  <div id="responsive-video-container">
+    <div id="video-player" />
+  </div>
+  <input @change="replace_url" type="text" name="url" placeholder="Youtube link ide">
+  <input v-model="title" type="text" name="url" placeholder="Adj neki egy nevet">
+  <v-range-slider :max="length" @end="slider_change" step="1" :isDisabled="length == 0 ? true : false" strict="true"
+                  v-model="from_to" thumb-label="always"
+  />
+
+  <div class="button-container" :class="{ upload: uploading }">
+    <button @click="uploadSong" :disabled="uploading">Feltöltés YouTube-ról
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+
+    </button>
+  </div>
+</template>
 
 <style lang="sass" scoped>
 @import url('https://fonts.googleapis.com/css2?family=Anta&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap')
 
-.container
-  display: flex
-  width: 90vw
-  justify-content: center
-  align-items: center
-  min-height: 100vh
-  padding: 20px
-  gap: 50px
-
-.card-body
-  font-family: 'Anta'
+#responsive-video-container
   position: relative
+  padding-bottom: 56.25%
+  /* 16:9 aspect ratio */
+  height: 0
+  overflow: hidden
+  max-width: 100%
+  background: #000
+
+#video-player
+  position: absolute
+  top: 0
+  left: 0
   width: 100%
-  max-width: 720px
-  min-width: 600px
-  height: 700px
-  padding: 20px
-  background: rgba(0, 0, 0, 0.5)
-  backdrop-filter: blur(50px)
-  box-sizing: border-box
-  box-shadow: 0 15px 25px rgba(0, 0, 0, 0.6)
-  border-radius: 10px
-  text-align: center
-  color: white
-  align-items: center
-  justify-content: center
-  flex-direction: column
-  word-wrap: break-word
+  height: 100%
 
 .button-container
   gap: .5em
@@ -287,10 +278,12 @@ function transformUrl(url: string): string {
     bottom: -100%
   50%, 100%
     bottom: 100%
+
 button :disabled
   background-color: rgba(0, 0, 0, 0.5)
 
 @media (max-height: 980)
+
 .card-body
   margin-top: 130px
 

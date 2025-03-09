@@ -7,8 +7,6 @@ const store = useSongVoteListStore()
 
 const isSessionAvailable = ref(false)
 
-// const { triggerToast } = inject('toast') as { triggerToast: (message: string, type: ToastEnum) => void }
-
 onMounted(async () => {
   try {
     await store.fetchSongVotesInSession()

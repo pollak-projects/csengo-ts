@@ -90,7 +90,7 @@ onMounted(async () => {
   height: 90%
   display: flex
   flex-direction: column
-  justify-content: center
+  justify-content: start
   align-items: center
 
 .search-container
@@ -112,7 +112,7 @@ onMounted(async () => {
 .create
   font-family: 'Anta', serif
   color: white
-  margin-top: 3%
+  margin-top: auto
   font-size: 2rem
   padding: 10px 30px
   border-radius: 10px

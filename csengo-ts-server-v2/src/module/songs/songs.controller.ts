@@ -33,7 +33,6 @@ import { DeleteFileOnErrorFilter } from '../../filter/delete.file.on.error.filte
 import { ConfigService } from '@nestjs/config';
 import { Public } from '../auth/auth.decorator';
 import { RolesGuard } from '../role/role.guard';
-import { UpdateScheduleDto } from "./dto/update.schedule.dto";
 
 @UseGuards(AuthGuard, RolesGuard)
 @Controller()

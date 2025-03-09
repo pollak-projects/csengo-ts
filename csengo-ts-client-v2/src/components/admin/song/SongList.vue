@@ -1,3 +1,4 @@
+
 <script setup lang="ts">
 import { inject, onMounted, ref } from 'vue'
 import { useSongListStore } from '@/stores/admin/song/songList'
@@ -96,15 +97,14 @@ onMounted(async () => {
   height: 90%
   display: flex
   flex-direction: column
-  justify-content: center
+  justify-content: start
   align-items: center
-
 
 /* And lastly, these are the table styles */
 .table-container
   width: 100%
   overflow-x: auto
-  scrollbar-width: none
+  scrollbar-width: thin
 
 .table-container::-webkit-scrollbar
   display: none
@@ -159,7 +159,7 @@ tr
 .upload
   font-family: 'Anta'
   color: white
-  margin-top: 3%
+  margin-top: auto
   font-size: 2rem
   padding: 10px 30px
   border-radius: 10px

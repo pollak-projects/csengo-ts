@@ -45,7 +45,7 @@ async function handleDownloadLastSessionWinningSong() {
   height: 90%
   display: flex
   flex-direction: column
-  justify-content: center
+  justify-content: start
   align-items: center
 
 .create
@@ -56,6 +56,7 @@ async function handleDownloadLastSessionWinningSong() {
   padding: 10px 30px
   border-radius: 10px
   background-color: #3883d9
+  width: 50dvh
 
 .create:hover
   background-color: #2a64a6

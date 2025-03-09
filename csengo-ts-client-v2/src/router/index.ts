@@ -16,7 +16,7 @@ import serviceLogger from '@/utils/logger.custom.util'
 
 const onlyUnauthenticatedPaths = ['/login', '/register', '/tv'];
 
-const userAccessiblePages = ['/'];
+const userAccessiblePages = ['/', '/snipper'];
 
 const roleProtectedPaths = [
     {
@@ -61,18 +61,14 @@ router.beforeResolve((to, from, next) => {
         return;
     }
 
-    // logger.debug(`Unprotected paths check ${unprotectedPaths.includes(to.path)}`, unprotectedPaths)
-
     const token: JwtPayload | null = payload.value as JwtPayload | null;
 
     if (onlyUnauthenticatedPaths.includes(to.path) && token === null) {
-        // logger.debug('auth path and token sub is null')
         next();
         return;
     }
 
     if (token === null) {
-        // logger.debug('Token is null')
         next('/login');
         return;
     }
@@ -80,33 +76,18 @@ router.beforeResolve((to, from, next) => {
     const currentPathProtected = roleProtectedPaths.some((rpp) => rpp.path === to.path);
 
     const currentTokenHasRoleForPath = roleProtectedPaths.some((rpp) => {
-        // logger.debug('Role protected paths', rpp)
-        // logger.debug(`RoleCheck role ${rpp.role}`)
-        // logger.debug(`Token roles`, token.roles)
-
         const hasRole = token.roles.some((role) => {
-            // logger.debug(`Role check ${role === rpp.role}`, role)
             return role === rpp.role;
         });
-
-        // logger.debug(`Hasrole check ${hasRole}`)
-        // logger.debug(`Token roles include ${rpp.role}: ${hasRole}`)
-        // logger.debug(`Path check ${rpp.path === to.path}`)
-        // logger.debug(`Result ${rpp.path === to.path && hasRole}`)
 
         return rpp.path === to.path && hasRole;
     });
 
-    // logger.debug(`Current path is protected ${currentPathProtected}`)
-    // logger.debug(`Current token has role for path ${currentTokenHasRoleForPath}`)
-
     if (currentPathProtected && !currentTokenHasRoleForPath) {
-        // logger.debug('Redirect to forbidden')
         next('/forbidden');
         return;
     }
 
-    // logger.debug('Continued because all path checks succeeded')
     next();
 });
 

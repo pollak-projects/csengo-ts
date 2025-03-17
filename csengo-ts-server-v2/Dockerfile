@@ -28,7 +28,6 @@ COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/template ./template
 
 RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories && \
-    apk update && \
     apk add --no-cache ffmpeg yt-dlp
 
 EXPOSE 3300
